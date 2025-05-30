@@ -1,0 +1,17 @@
+# Go
+/bin/
+/vendor/
+*.exe
+*.test
+*.out
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Docker
+pgdata/
+.env
