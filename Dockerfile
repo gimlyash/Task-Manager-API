@@ -1,4 +1,4 @@
-FROM golang:1.21-alpine
+FROM golang:1.20-alpine
 
 WORKDIR /app
 
@@ -7,8 +7,8 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o server .
+RUN go build -o task-manager ./cmd/server/main.go
 
 EXPOSE 8080
 
-CMD ["./server"]
+CMD ["./task-manager"]
