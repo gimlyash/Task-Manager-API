@@ -1,14 +1,14 @@
 package main
 
 import (
-	"Task-Manager-API/pkg/db"
-	"github.com/gimlyash/Task-Manager-API.git/internal/models"
-	"github.com/gimlyash/Task-Manager-API.git/internal/repository"
-	"github.com/gimlyash/Task-Manager-API.git/internal/service"
 	"log"
 	"os"
 
+	"TaskManagerApi/internal/handler"
 	"github.com/gin-gonic/gin"
+	"task-manager-api/internal/repository"
+	"task-manager-api/internal/service"
+	"task-manager-api/pkg/db"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 	}
 
 	// Авто миграция схемы
-	err = dbConn.AutoMigrate(&models.Task{})
+	err = dbConn.AutoMigrate(&repository.TaskRepository{}.Model)
 	if err != nil {
 		log.Fatalf("failed migration: %v", err)
 	}
