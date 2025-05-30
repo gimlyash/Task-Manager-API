@@ -1,11 +1,12 @@
-package handlers
+package handler
 
 import (
-	"github.com/gimlyash/Task-Manager-API.git/internal/models"
-	"github.com/gimlyash/Task-Manager-API.git/internal/service"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gimlyash/Task-Manager-API.git/internal/model"
+	"github.com/gimlyash/Task-Manager-API.git/internal/service"
+	"github.com/gin-gonic/gin"
 )
 
 type TaskHandler struct {
@@ -17,7 +18,7 @@ func NewTaskHandler(service service.TaskService) *TaskHandler {
 }
 
 func (h *TaskHandler) CreateTask(c *gin.Context) {
-	var task models.Task
+	var task model.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -44,11 +45,12 @@ func (h *TaskHandler) GetTaskByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
 	}
 
 	task, err := h.service.GetTaskByID(uint(id))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "task not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
 		return
 	}
 	c.JSON(http.StatusOK, task)
@@ -61,7 +63,7 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 		return
 	}
 
-	var task models.Task
+	var task model.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -81,6 +83,7 @@ func (h *TaskHandler) DeleteTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
 		return
 	}
+
 	if err := h.service.DeleteTask(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

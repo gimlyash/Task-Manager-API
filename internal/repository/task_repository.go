@@ -1,46 +1,47 @@
 package repository
 
 import (
-	"github.com/gimlyash/Task-Manager-API.git/internal/models"
+	"github.com/gimlyash/Task-Manager-API.git/internal/model"
+
 	"gorm.io/gorm"
 )
 
 type TaskRepository interface {
-	Create(task *models.Task) error
-	GetAll() ([]models.Task, error)
-	GetByID(id uint) (*models.Task, error)
-	Update(task *models.Task) error
+	Create(task *model.Task) error
+	GetAll() ([]model.Task, error)
+	GetByID(id uint) (*model.Task, error)
+	Update(task *model.Task) error
 	Delete(id uint) error
 }
 
-type taskRepositoryImpl struct {
+type taskRepository struct {
 	db *gorm.DB
 }
 
 func NewTaskRepository(db *gorm.DB) TaskRepository {
-	return &taskRepositoryImpl{db: db}
+	return &taskRepository{db: db}
 }
 
-func (r *taskRepositoryImpl) Create(task *models.Task) error {
-	return r.db.Create(&task).Error
+func (r *taskRepository) Create(task *model.Task) error {
+	return r.db.Create(task).Error
 }
 
-func (r *taskRepositoryImpl) GetAll() ([]models.Task, error) {
-	var tasks []models.Task
+func (r *taskRepository) GetAll() ([]model.Task, error) {
+	var tasks []model.Task
 	err := r.db.Find(&tasks).Error
 	return tasks, err
 }
 
-func (r *taskRepositoryImpl) GetByID(id uint) (*models.Task, error) {
-	var task models.Task
-	err := r.db.First(&task, "id = ?", id).Error
+func (r *taskRepository) GetByID(id uint) (*model.Task, error) {
+	var task model.Task
+	err := r.db.First(&task, id).Error
 	return &task, err
 }
 
-func (r *taskRepositoryImpl) Update(task *models.Task) error {
-	return r.db.Save(&task).Error
+func (r *taskRepository) Update(task *model.Task) error {
+	return r.db.Save(task).Error
 }
 
-func (r *taskRepositoryImpl) Delete(id uint) error {
-	return r.db.Delete(&models.Task{}, "id = ?", id).Error
+func (r *taskRepository) Delete(id uint) error {
+	return r.db.Delete(&model.Task{}, id).Error
 }
